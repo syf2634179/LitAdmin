@@ -9,7 +9,7 @@
         <a href="/"><img src="../assets/logotxt.png"></a>
       </div>
       <div class="topbar-title">
-        <span style="font-size: 18px;color: #fff;">后台管理系统</span>
+        <span style="font-size: 18px;color: #fff;">运维指针</span>
       </div>
       <div class="topbar-account topbar-btn">
         <el-dropdown trigger="click">
@@ -33,30 +33,55 @@
       <!--左侧导航-->
       <aside :class="{showSidebar:!collapsed}">
         <!--展开折叠开关-->
-        <div class="menu-toggle" @click.prevent="collapse">
+        <!-- <div class="menu-toggle" @click.prevent="collapse">
           <i class="iconfont icon-menufold" v-show="!collapsed"></i>
           <i class="iconfont icon-menuunfold" v-show="collapsed"></i>
-        </div>
+        </div> -->
         <!--导航菜单-->
-        <el-menu default-active="0" router :collapse="collapsed">
+        <el-menu default-active="$route.path" router :collapse="collapsed">
           <template v-for="(item,index) in $router.options.routes" v-if="item.menuShow">
-            <el-submenu v-if="!item.leaf" :index="index+''">
+            <!-- <el-submenu v-if="!item.leaf" :index="index+''">
               <template slot="title"><i :class="item.iconCls"></i><span slot="title">{{item.name}}</span></template>
-              <el-menu-item v-for="term in item.children" :key="term.path" :index="term.path" v-if="term.menuShow"
+              <el-menu-item  v-for="term in item.children" :key="term.path" :index="term.path" v-if="term.menuShow"
                             :class="$route.path==term.path?'is-active':''">
                 <i :class="term.iconCls"></i><span slot="title">{{term.name}}</span>
               </el-menu-item>
-            </el-submenu>
-            <el-menu-item v-else-if="item.leaf&&item.children&&item.children.length" :index="item.children[0].path"
-                          :class="$route.path==item.children[0].path?'is-active':''">
+            </el-submenu> -->
+            <syf-menu-item style="border-right:1px solid #00c1de;" 
+             
+            :index="item.children[0].path"
+            :class="$route.path==item.children[0].path?'is-active':''">
               <i :class="item.iconCls"></i><span slot="title">{{item.children[0].name}}</span>
-            </el-menu-item>
+            </syf-menu-item>
+          </template>
+        </el-menu>
+
+        <el-menu default-active="$route.path" router :collapse="collapsed">
+          <template v-for="(item,index) in $router.options.routes[2].children">
+            <syf-menu-item :index="item.path"
+                          :class="$route.path==item.path?'is-active':''">
+              <i :class="item.iconCls"></i><span slot="title">{{item.name}}</span>
+            </syf-menu-item>
           </template>
         </el-menu>
       </aside>
 
       <!--右侧内容区-->
       <section class="content-container">
+        <el-tabs
+          v-model="activeIndex"
+          type="border-card"
+          closable
+          @tab-click="tabClick"
+          v-if="options.length"
+          @tab-remove="tabRemove">
+          <el-tab-pane
+            :key="item.name"
+            v-for="(item, index) in options"
+            :label="item.name"
+            :name="item.route">
+          </el-tab-pane>
+        </el-tabs>
         <div class="grid-content bg-purple-light">
           <el-col :span="24" class="content-wrapper">
             <transition name="fade" mode="out-in">
@@ -72,9 +97,12 @@
 
 <script>
   import {bus} from '../bus.js'
-  import API from '../api/api_user';
-
+  import API from '../api/api_user'
+  import syfMenuItem from './syfcommen/elementui/menu-item'
   export default {
+    components:{
+      syfMenuItem
+    },
     name: 'home',
     created(){
       bus.$on('setNickName', (text) => {
@@ -91,10 +119,64 @@
     data () {
       return {
         nickname: '',
-        collapsed: false,
+        collapsed: true,
+      }
+    },
+    computed: {
+      author () {
+        return this.$store.state.author
+      },
+      options () {
+        return this.$store.state.options;
+      },
+      activeIndex: {
+        get () {
+          return this.$store.state.activeIndex;
+        },
+        set (val) {
+          this.$store.commit('set_active_index', val);
+        }
+      }
+    },
+    watch: {
+      $route(to) {
+        let flag = false;
+        for (let option of this.options ) {
+          if (option.name === to.name) {
+            flag = true;
+            this.$store.commit('set_active_index', to.path);
+            break
+          }
+        }
+        if (!flag) {
+          this.$store.commit('add_tabs', {route: to.path, name: to.name});
+          this.$store.commit('set_active_index', to.path);
+        }
       }
     },
     methods: {
+      // tab切换时，动态的切换路由
+      tabClick (tab) {
+        let path = this.activeIndex;
+        // 用户详情页的时候，对应了二级路由，需要拼接添加第二级路由
+        this.$router.push({path: path});
+      },
+      tabRemove (targetName) {
+        // 首页不可删除
+        if(targetName == '/dashboard'|| targetName == '/') {
+          return;
+        }
+        this.$store.commit('delete_tabs', targetName);
+        if (this.activeIndex === targetName) {
+          // 设置当前激活的路由
+          if (this.options && this.options.length >= 1) {
+            this.$store.commit('set_active_index', this.options[this.options.length-1].route);
+            this.$router.push({path: this.activeIndex});
+          } else {
+            this.$router.push({path: '/'});
+          }
+        }
+      },
       handleOpen() {
         //console.log('handleopen');
       },
@@ -136,6 +218,18 @@
         user = JSON.parse(user);
         this.nickname = user.nickname || '';
       }
+      // 刷新时以当前路由做为tab加入tabs
+      let firstpage="/dashboard";
+      let firstpagename="首页";
+      if (this.$route.path !== '/' && this.$route.path.indexOf(firstpage) == -1) {
+        this.$store.commit('add_tabs', {route: firstpage, name: firstpagename});
+        this.$store.commit('add_tabs', {route: this.$route.path , name: this.$route.name });
+        this.$store.commit('set_active_index', this.$route.path);
+      } else {
+        this.$store.commit('add_tabs', {route: firstpage, name: firstpagename});
+        this.$store.commit('set_active_index', firstpage);
+        this.$router.push(firstpage);
+      }
     }
   }
 </script>
@@ -156,9 +250,6 @@
       .topbar-btn {
         color: #fff;
       }
-      /*.topbar-btn:hover {*/
-      /*background-color: #4A5064;*/
-      /*}*/
       .topbar-logo {
         float: left;
         width: 59px;
@@ -216,9 +307,8 @@
 
       .el-menu {
         height: 100%; /*写给不支持calc()的浏览器*/
-        height: -moz-calc(100% - 80px);
-        height: -webkit-calc(100% - 80px);
-        height: calc(100% - 80px);
+        overflow-y:auto;
+        overflow-x:hidden;
         border-radius: 0px;
         background-color: #333744;
       }
@@ -231,11 +321,12 @@
       }
       .el-menu--collapse {
         width: 60px;
+        float: left;
       }
 
       .el-menu .el-menu-item, .el-submenu .el-submenu__title {
-        height: 46px;
-        line-height: 46px;
+        height: 60px;
+        width:100%;
       }
 
       .el-menu-item:hover, .el-submenu .el-menu-item:hover, .el-submenu__title:hover {

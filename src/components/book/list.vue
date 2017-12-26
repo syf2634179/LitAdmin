@@ -10,20 +10,19 @@
 
     <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
       <!--工具条-->
-      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
           <el-form-item>
             <el-input v-model="filters.name" placeholder="书名" @keyup.enter.native="handleSearch"></el-input>
           </el-form-item>
-          <el-form-item>
             <el-button type="primary" v-on:click="handleSearch">查询</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="showAddDialog">新增</el-button>
-          </el-form-item>
         </el-form>
+      </el-col> -->
+      <!--工具条-->
+      <el-col :span="24" class="toolbar">
+        <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
+        <el-button type="primary" @click="showAddDialog">新增</el-button>
       </el-col>
-
       <!--列表-->
       <el-table :data="books" highlight-current-row @selection-change="selsChange"
                 style="width: 100%;">
@@ -38,9 +37,11 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="书名" sortable></el-table-column>
-        <el-table-column prop="author" label="作者" width="100" sortable></el-table-column>
-        <el-table-column prop="publishAt" label="出版日期" width="150" sortable></el-table-column>
+        <el-table-column prop="name" label="书名" sortable :render-header="inputsearch"></el-table-column>
+        <el-table-column prop="author" label="作者" width="100" sortable :render-header="inputsearch"></el-table-column>
+        <el-table-column prop="publishAt" label="出版日期" width="150" sortable
+        :render-header="inputsearch"
+        ></el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
@@ -48,15 +49,12 @@
           </template>
         </el-table-column>
       </el-table>
-
-      <!--工具条-->
+<!--工具条-->
       <el-col :span="24" class="toolbar">
-        <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
-        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+        <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="limit" :total="total"
                        style="float:right;">
         </el-pagination>
       </el-col>
-
       <el-dialog title="编辑" :visible.sync ="editFormVisible" :close-on-click-modal="false">
         <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
           <el-form-item label="书名" prop="name">
@@ -82,13 +80,13 @@
       <el-dialog title="新增" :visible.sync ="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="书名" prop="name">
-            <el-input v-model="addForm.name" auto-complete="off"></el-input>
+            <el-input v-model="addForm.name" auto-complete="on"></el-input>
           </el-form-item>
           <el-form-item label="作者" prop="author">
             <el-input v-model="addForm.author" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="出版日期">
-            <el-date-picker type="date" placeholder="选择日期" v-model="addForm.publishAt"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择日期" :editable = "false" v-model="addForm.publishAt"></el-date-picker>
           </el-form-item>
           <el-form-item label="简介" prop="description">
             <el-input type="textarea" v-model="addForm.description" :rows="8"></el-input>
@@ -320,6 +318,22 @@
         }).catch(() => {
 
         });
+      },
+      //header搜索
+      inputsearch: function (h, { column, $index }) {
+         return h(
+          'span',
+          [
+            h('span', column.label),
+            h('br'),
+            h('input', {
+              attr: {name: 'publishAt'},
+              style:{
+                width:'50%'
+              }
+            })
+          ]
+        ); 
       }
     },
     mounted() {

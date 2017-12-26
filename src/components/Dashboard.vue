@@ -5,11 +5,10 @@
         <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
       </el-breadcrumb>
     </el-col>
-
     <el-col :span="24" class="warp-main">
-      <section class="chart-container">
-        <el-row>
-          <el-col :span="8">
+      <section class="chart-container ">
+        <el-row id="sortable" class="list-group">
+          <el-col :span="8" class="list-group-item">
             <el-card :body-style="{ padding: '0px' }">
               <img src="../assets/images/forest.png" class="image">
               <div style="padding: 14px;">
@@ -20,7 +19,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" class="list-group-item">
             <el-card :body-style="{ padding: '0px' }">
               <img src="../assets/images/sunrise.png" class="image">
               <div style="padding: 14px;">
@@ -31,7 +30,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" class="list-group-item">
             <el-card :body-style="{ padding: '0px' }">
               <img src="../assets/images/sunshine.png" class="image">
               <div style="padding: 14px;">
@@ -42,24 +41,23 @@
               </div>
             </el-card>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="list-group-item">
             <div id="chartColumn" style="width:100%; height:400px;"></div>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="list-group-item">
             <div id="chartBar" style="width:100%; height:400px;"></div>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="list-group-item">
             <div id="chartLine" style="width:100%; height:400px;"></div>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12" class="list-group-item">
             <div id="chartPie" style="width:100%; height:400px;"></div>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="24" >
             <a href="http://echarts.baidu.com/examples.html" target="_blank" style="float: right;">more>></a>
           </el-col>
         </el-row>
       </section>
-
     </el-col>
   </el-row>
 </template>
@@ -95,11 +93,19 @@
   .chart-container .el-col {
     padding: 30px 20px;
   }
+  .list-group-item {
+    transition: all 1s;
+    cursor: move;
+  } 
 </style>
 
 <script>
   import echarts from 'echarts'
-
+  import Sortable from 'sortablejs'
+  document.body.ondrop = function (event) {  
+    event.preventDefault();  
+    event.stopPropagation();  
+  }  
   export default {
     data() {
       return {
@@ -257,6 +263,9 @@
             }
           }
         ]
+      });
+      Sortable.create(sortable, { 
+        animation: 300 
       });
     }
   }
