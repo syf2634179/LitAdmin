@@ -22,7 +22,7 @@ a {
 
 .el-menu .el-menu-item, .el-submenu .el-submenu__title {
   line-height: 20px;
-  padding-top:10px;
+  padding-top:12px;
 }
 
 .el-menu-item:hover, .el-submenu .el-menu-item:hover, .el-submenu__title:hover {
@@ -51,31 +51,34 @@ a {
   margin: 5px 10px 15px 0px;
 }
 .el-menu-item{
-  padding:0;
-  text-align:center;
+  padding: 0;
+  text-align: center;
 }
 .el-menu--collapse > .el-menu-item span{
-  visibility:visible;
+  visibility: visible;
   display: block;
   height: auto;
-  font-size:11px;
+  font-size: 11px;
   width: 100%;
   text-align: center;
 }
 
 .el-tabs--border-card{
- box-shadow:inherit; 
- -webkit-box-shadow:inherit;
- margin:-10px -10px 10px -10px;
- border:none;
+ box-shadow: inherit; 
+ -webkit-box-shadow: inherit;
+ margin: -10px -10px 10px -10px;
+ border: none;
 }
 .el-tabs--border-card > .el-tabs__content{
-  display:none;
+  display: none;
 }
 .container .content-container{
 }
 .el-tabs__item{
-  height:30px;
-  line-height:32px;
-  font-size:12px;
+  height: 30px;
+  line-height: 32px;
+  font-size: 12px;
+}
+.el-tabs__nav-next, .el-tabs__nav-prev{
+  line-height: 32px;
 }
