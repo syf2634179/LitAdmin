@@ -6,7 +6,7 @@ import Dashboard from '@/components/Dashboard'
 import BookList from '@/components/book/list'
 import BookCategoryList from '@/components/bookcategory/list'
 
-import UserList from '@/components/user/list'
+import UserList from '@/components/asset/list'
 import UserChangePwd from '@/components/user/changepwd'
 import UserProfile from '@/components/user/profile'
 
@@ -43,25 +43,22 @@ let router = new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-users', // 图标样式class
       children: [
-        {path: '/user/list', iconCls: 'iconfont icon-users', component: UserList, name: '资产管理', menuShow: true},
-        {path: '/book/list', iconCls: 'iconfont icon-users', component: BookList, name: '图书列表', menuShow: true},
-        {path: '/book/category', iconCls: 'iconfont icon-users', component: BookCategoryList, name: '图书分类', menuShow: true},
-        {path: '/user/profile', iconCls: 'iconfont icon-users', component: UserProfile, name: '个人信息', menuShow: true},
-        {path: '/user/changepwd', iconCls: 'iconfont icon-users', component: UserChangePwd, name: '修改密码', menuShow: true}
+        {path: '/asset/list', iconCls: 'iconfont icon-users', component: UserList, name: '资产列表', menuShow: true},
+        {path: '/asset/list/profile', iconCls: 'iconfont icon-users', component: UserProfile, name: '资产信息', menuShow: true},
       ]
     },
-    // {
-    //   path: '/',
-    //   component: Home,
-    //   name: '图书管理',
-    //   menuShow: true,
-    //   leaf: true, // 只有一个节点
-    //   iconCls: 'iconfont icon-books',
-    //   children: [
-    //     {path: '/book/list', component: BookList, name: '图书列表', menuShow: true},
-    //     {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true}
-    //   ]
-    // },
+    {
+      path: '/',
+      component: Home,
+      name: '图书管理',
+      menuShow: true,
+      leaf: true, // 只有一个节点
+      iconCls: 'iconfont icon-books',
+      children: [
+        {path: '/book/list', component: BookList, name: '图书列表', menuShow: true},
+        {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true}
+      ]
+    },
     {
       path: '/',
       component: Home,
