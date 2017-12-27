@@ -49,7 +49,11 @@
       disabled: {
         type: Boolean,
         required: false
-      }
+      },
+      children: {
+        type: Array,
+        required: false
+      },
     },
     computed: {
       active() {
@@ -95,6 +99,7 @@
         this.$el.style.backgroundColor = this.backgroundColor;
       },
       handleClick() {
+        this.$store.commit('set_active_menuchildren', this.children);
         this.dispatch('ElMenu', 'item-click', this);
         this.$emit('click', this);
       }
