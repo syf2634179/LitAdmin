@@ -39,7 +39,7 @@
         </div> -->
         <!--导航菜单-->
         <el-menu default-active="$route.path" router :collapse="collapsed">
-          <template v-for="(item,index) in $router.options.routes" v-if="item.menuShow">
+          <template v-for="(item,index) in $store.state.routes" v-if="item.menuShow">
             <!-- <el-submenu v-if="!item.leaf" :index="index+''">
               <template slot="title"><i :class="item.iconCls"></i><span slot="title">{{item.name}}</span></template>
               <el-menu-item  v-for="term in item.children" :key="term.path" :index="term.path" v-if="term.menuShow"
@@ -48,18 +48,20 @@
               </el-menu-item>
             </el-submenu> -->
             <syf-menu-item style="border-right:1px solid #00c1de;" 
-             
-            :index="item.children[0].path"
-            :class="$route.path==item.children[0].path?'is-active':''">
-              <i :class="item.iconCls"></i><span slot="title">{{item.children[0].name}}</span>
+              :index="item.children[0].path"
+              :children="item.children"
+              :class="$route.path.indexOf(item.parpath)>-1?'is-active':''">
+              <i :class="item.iconCls"></i><span slot="title">{{item.name}}</span>
             </syf-menu-item>
           </template>
         </el-menu>
 
         <el-menu default-active="$route.path" router :collapse="collapsed">
-          <template v-for="(item,index) in $router.options.routes[2].children">
-            <syf-menu-item :index="item.path"
-                          :class="$route.path==item.path?'is-active':''">
+          <template v-for="(item,index) in $store.state.menuchildren" v-if="!item.ishide">
+            <syf-menu-item 
+              :index="item.path"
+              :children="$store.state.menuchildren"
+              :class="$route.path.indexOf(item.path)>-1?'is-active':''">
               <i :class="item.iconCls"></i><span slot="title">{{item.name}}</span>
             </syf-menu-item>
           </template>
@@ -123,9 +125,6 @@
       }
     },
     computed: {
-      author () {
-        return this.$store.state.author
-      },
       options () {
         return this.$store.state.options;
       },
@@ -140,6 +139,13 @@
     },
     watch: {
       $route(to) {
+        let firsturl=to.path.split('/')[1];
+        for (let option of this.$store.state.routes ) {
+          if(option.parpath==firsturl){
+            this.$store.commit('set_active_menuchildren', option.children);
+            break
+          }
+        }
         let flag = false;
         for (let option of this.options ) {
           if (option.name === to.name) {
@@ -158,7 +164,6 @@
       // tab切换时，动态的切换路由
       tabClick (tab) {
         let path = this.activeIndex;
-        // 用户详情页的时候，对应了二级路由，需要拼接添加第二级路由
         this.$router.push({path: path});
       },
       tabRemove (targetName) {
@@ -229,6 +234,13 @@
         this.$store.commit('add_tabs', {route: firstpage, name: firstpagename});
         this.$store.commit('set_active_index', firstpage);
         this.$router.push(firstpage);
+      }
+      let firsturl=this.$route.path.split('/')[1];
+      for (let option of this.$store.state.routes ) {
+        if(option.parpath==firsturl){
+          this.$store.commit('set_active_menuchildren', option.children);
+          break
+        }
       }
     }
   }
