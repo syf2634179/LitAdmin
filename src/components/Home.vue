@@ -225,7 +225,7 @@
       }
       // 刷新时以当前路由做为tab加入tabs
       let firstpage="/dashboard";
-      let firstpagename="首页";
+      let firstpagename="概览";
       if (this.$route.path !== '/' && this.$route.path.indexOf(firstpage) == -1) {
         this.$store.commit('add_tabs', {route: firstpage, name: firstpagename});
         this.$store.commit('add_tabs', {route: this.$route.path , name: this.$route.name });

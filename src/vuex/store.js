@@ -19,14 +19,14 @@ const store = new Vuex.Store({
       },
       {
         path: '/dashboard',
-        name: '首页',
+        name: '概览',
         redirect: '/dashboard',
         leaf: true, // 只有一个节点
         menuShow: true,
         iconCls: 'iconfont icon-home', // 图标样式class
         parpath: "dashboard",
         children: [
-          {path: '/dashboard', iconCls: 'iconfont icon-home', name: '首页',ishide: true}
+          {path: '/dashboard', iconCls: 'iconfont icon-home', name: '概览',ishide: true}
         ]
       },
       {

@@ -25,14 +25,14 @@ let router = new Router({
     },
     {
       path: '/',
-      name: 'home',
+      name: '概览',
       component: Home,
       redirect: '/dashboard',
       leaf: true, // 只有一个节点
       menuShow: true,
       iconCls: 'iconfont icon-home', // 图标样式class
       children: [
-        {path: '/dashboard', component: Dashboard, name: '首页', menuShow: true}
+        {path: '/dashboard', component: Dashboard, name: '概览', menuShow: true}
       ]
     },
     {
