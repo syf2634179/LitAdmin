@@ -5,8 +5,8 @@
 var express = require('express');
 var router = express.Router();
 var indexRouter = {};
-var userController = require('../../../controllers/user');
-var bookController = require('../../../controllers/book');
+var userController = require('../../controllers/user');
+var bookController = require('../../controllers/book');
 
 //先检查登录
 router.use(userController.checkLogin);

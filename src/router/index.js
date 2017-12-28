@@ -6,7 +6,7 @@ import Dashboard from '@/components/Dashboard'
 import BookList from '@/components/book/list'
 import BookCategoryList from '@/components/bookcategory/list'
 
-import UserList from '@/components/user/list'
+import UserList from '@/components/asset/list'
 import UserChangePwd from '@/components/user/changepwd'
 import UserProfile from '@/components/user/profile'
 
@@ -38,12 +38,13 @@ let router = new Router({
     {
       path: '/',
       component: Home,
-      name: '用户管理',
+      name: '资产管理',
       menuShow: true,
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-users', // 图标样式class
       children: [
-        {path: '/user/list', component: UserList, name: '用户列表', menuShow: true}
+        {path: '/asset/list', iconCls: 'iconfont icon-users', component: UserList, name: '资产列表', menuShow: true},
+        {path: '/asset/list/profile', iconCls: 'iconfont icon-users', component: UserProfile, name: '资产信息', menuShow: true},
       ]
     },
     {
@@ -51,6 +52,7 @@ let router = new Router({
       component: Home,
       name: '图书管理',
       menuShow: true,
+      leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-books',
       children: [
         {path: '/book/list', component: BookList, name: '图书列表', menuShow: true},
@@ -62,6 +64,7 @@ let router = new Router({
       component: Home,
       name: '设置',
       menuShow: true,
+      leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-setting1',
       children: [
         {path: '/user/profile', component: UserProfile, name: '个人信息', menuShow: true},

@@ -16,6 +16,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleSearch">查询</el-button>
+              <el-button type="primary" @click="editPeople">用户修改</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -71,6 +72,9 @@
         this.page = 1;
         this.search();
       },
+      editPeople(){
+        this.$router.push("/asset/list/profile");
+      },
       //获取用户列表
       search: function () {
         let that = this;
@@ -98,7 +102,7 @@
       }
     },
     mounted() {
-      this.handleSearch()
+      //this.handleSearch()
     }
   }
 </script>

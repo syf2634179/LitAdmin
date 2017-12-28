@@ -7,7 +7,7 @@
 var express = require('express');
 var router = express.Router();
 var indexRouter = {};
-var userController = require('../../../controllers/user');
+var userController = require('../../controllers/user');
 
 //用户登录
 router.post('/login', userController.login);
