@@ -25,7 +25,7 @@ let router = new Router({
     },
     {
       path: '/',
-      name: '概览',
+      name: '首页',
       component: Home,
       redirect: '/dashboard',
       leaf: true, // 只有一个节点
@@ -38,25 +38,25 @@ let router = new Router({
     {
       path: '/',
       component: Home,
-      name: '资产管理',
+      name: '资产',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-users', // 图标样式class
+      iconCls: 'iconfont icon-books',
       children: [
-        {path: '/asset/list', iconCls: 'iconfont icon-users', component: UserList, name: '资产列表', menuShow: true},
-        {path: '/asset/list/profile', iconCls: 'iconfont icon-users', component: UserProfile, name: '资产信息', menuShow: true},
+        {path: '/book/list', component: BookList, name: '网络设备', menuShow: true},
+        {path: '/book/category', component: BookCategoryList, name: '安全设备', menuShow: true}
       ]
     },
     {
       path: '/',
       component: Home,
-      name: '图书管理',
+      name: '工单',
       menuShow: true,
       leaf: true, // 只有一个节点
-      iconCls: 'iconfont icon-books',
+      iconCls: 'iconfont icon-users', // 图标样式class
       children: [
-        {path: '/book/list', component: BookList, name: '图书列表', menuShow: true},
-        {path: '/book/category', component: BookCategoryList, name: '图书分类', menuShow: true}
+        {path: '/asset/list', iconCls: 'iconfont icon-users', component: UserList, name: '工单1', menuShow: true},
+        {path: '/asset/list/profile', iconCls: 'iconfont icon-users', component: UserProfile, name: '工单详情', menuShow: true},
       ]
     },
     {

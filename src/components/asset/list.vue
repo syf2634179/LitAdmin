@@ -102,7 +102,7 @@
       }
     },
     mounted() {
-      //this.handleSearch()
+      this.handleSearch()
     }
   }
 </script>

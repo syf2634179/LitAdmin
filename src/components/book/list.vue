@@ -1,14 +1,13 @@
 <template>
   <el-row class="warp">
-    <el-col :span="24" class="warp-breadcrum">
+    <!-- <el-col :span="24" class="warp-breadcrum">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/' }"><b>首页</b></el-breadcrumb-item>
         <el-breadcrumb-item>图书管理</el-breadcrumb-item>
         <el-breadcrumb-item>图书列表</el-breadcrumb-item>
       </el-breadcrumb>
-    </el-col>
-
-    <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="拼命加载中">
+    </el-col> -->
+    <el-col :span="24" class="warp-main" v-loading="loading" element-loading-text="加载中">
       <!--工具条-->
       <!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form :inline="true" :model="filters">
@@ -19,15 +18,65 @@
         </el-form>
       </el-col> -->
       <!--工具条-->
+      <el-col :span="20" class="toolbar">
+        <!-- <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button> -->
+        <!-- <el-button type="primary" @click="showAddDialog">新增</el-button> -->
+        <el-button type="primary" @click="showAddDialog">设备入库</el-button>
+        <el-button type="primary" @click="showAddDialog">自动发现</el-button>
+        <el-button type="primary" @click="showAddDialog">批量导入</el-button>
+        <el-dropdown>
+          <el-button type="primary">
+            更多<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>直接添加</el-dropdown-item>
+            <el-dropdown-item>批量导出</el-dropdown-item>
+            <el-dropdown-item>直接下架</el-dropdown-item>
+            <el-dropdown-item>直接删除</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-col>
+      <el-col :span="4" class="toolbar">
+          <el-input
+            placeholder="请输入内容"
+            v-model="inputquicksearch">
+            <!-- <i slot="suffix" class="el-input__icon el-icon-search input-with-select"></i> -->
+            <el-button @click="quicksearch" slot="append" icon="el-icon-search"></el-button>
+          </el-input>
+      </el-col>
       <el-col :span="24" class="toolbar">
-        <el-button type="danger" @click="batchDeleteBook" :disabled="this.sels.length===0">批量删除</el-button>
-        <el-button type="primary" @click="showAddDialog">新增</el-button>
+        <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+          <el-tab-pane label="负载均衡" name="first">用户管理</el-tab-pane>
+          <el-tab-pane label="数据中心交换机" name="second">配置管理</el-tab-pane>
+          <el-tab-pane label="核心层交换机" name="third">角色管理</el-tab-pane>
+          <el-tab-pane label="汇聚层交换机" name="fourth">定时任务补偿</el-tab-pane>
+          <el-tab-pane label="核心层路由器" name="five">定时任务补偿</el-tab-pane>
+          <el-tab-pane label="汇聚层路由器" name="six">定时任务补偿</el-tab-pane>
+          <el-tab-pane label="接入层交换机" name="seven">定时任务补偿</el-tab-pane>
+
+        </el-tabs>
       </el-col>
       <!--列表-->
-      <el-table :data="books" highlight-current-row @selection-change="selsChange"
-                style="width: 100%;">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column type="index" width="60"></el-table-column>
+      <el-table :data="books" style="width: 100%" highlight-current-row @selection-change="selsChange" stripe>
+        <el-table-column type="selection" fixed width="40">
+        </el-table-column>
+        <el-table-column type="index" fixed width="50" label="序号"></el-table-column>
+        <el-table-column prop="id" label="资产编号"  sortable >
+          <el-table-column prop="id"  :render-header="inputsearch" min-width="200">
+          </el-table-column>
+        </el-table-column>
+        <el-table-column prop="name" label="资产名称"  sortable>
+          <el-table-column prop="name" :render-header="inputsearch" width="200">
+          </el-table-column>
+        </el-table-column>
+        <el-table-column prop="author" label="场地"  sortable>
+          <el-table-column prop="author" :render-header="inputsearch" width="100">
+          </el-table-column>
+        </el-table-column>
+        <el-table-column prop="publishAt" label="创建时间"  sortable>
+          <el-table-column prop="publishAt" :render-header="inputsearch" width="150">
+          </el-table-column>
+        </el-table-column>
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -37,16 +86,15 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="书名" sortable :render-header="inputsearch"></el-table-column>
-        <el-table-column prop="author" label="作者" width="100" sortable :render-header="inputsearch"></el-table-column>
-        <el-table-column prop="publishAt" label="出版日期" width="150" sortable
-        :render-header="inputsearch"
-        ></el-table-column>
-        <el-table-column label="操作" width="150">
-          <template slot-scope="scope">
-            <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
-            <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
-          </template>
+        <el-table-column label="操作" align="center">
+          <el-table-column label="显示列筛选" align="center" width="150" fixed="right" :filters="propselects"
+            :filter-method="filterTag"
+            filter-placement="bottom-end">
+            <template slot-scope="scope">
+              <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
+              <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
+            </template>
+          </el-table-column>
         </el-table-column>
       </el-table>
 <!--工具条-->
@@ -97,7 +145,6 @@
           <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
         </div>
       </el-dialog>
-
     </el-col>
   </el-row>
 </template>
@@ -114,9 +161,13 @@
         books: [],
         total: 0,
         page: 1,
-        limit: 10,
+        limit: 20,
         loading: false,
         sels: [], //列表选中列
+        propselects: [{ text: '家', value: '家' }, { text: '公司', value: '公司' }],
+        searchshow: false, //搜索是否显示
+        activeName2: 'first',
+        inputquicksearch:'',
 
         //编辑相关数据
         editFormVisible: false,//编辑界面是否显示
@@ -162,6 +213,14 @@
       }
     },
     methods: {
+      //快速搜索
+      quicksearch(){
+        alert(this.inputquicksearch);
+      },
+      //tabs点击切换
+      handleClick(tab, event) {
+        console.log(tab, event);
+      },
       handleCurrentChange(val) {
         this.page = val;
         this.search();
@@ -175,7 +234,7 @@
         let that = this;
         let params = {
           page: that.page,
-          limit: 10,
+          limit: that.limit,
           name: that.filters.name
         };
 
@@ -321,19 +380,15 @@
       },
       //header搜索
       inputsearch: function (h, { column, $index }) {
-         return h(
-          'span',
-          [
-            h('span', column.label),
-            h('br'),
-            h('input', {
-              attr: {name: 'publishAt'},
-              style:{
-                width:'50%'
-              }
-            })
-          ]
-        ); 
+         return h('input', {
+          style:{
+            width:'96%'
+          }
+        })
+      },
+      //删选列头
+      filterTag(value, row) {
+        return row.tag === value;
       }
     },
     mounted() {
@@ -346,4 +401,18 @@
   .demo-table-expand label {
     font-weight: bold;
   }
+  .toolbar{
+  margin:10px auto 0;
+}
+.el-tabs--card > .el-tabs__header{
+  border-bottom:none;
+  margin: 0;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__nav{
+  margin: 0 0 0 20px;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__item.is-active{
+  background: #f5f7fa; 
+  border-bottom-color:#dfe4ed !important;
+}
 </style>

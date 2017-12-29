@@ -26,6 +26,9 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
+      <div class="topbar-account topbar-btn">
+        <el-button type="warning" icon="el-icon-rank">全屏</el-button>
+      </div>
     </el-col>
 
     <!--中间-->
@@ -47,7 +50,7 @@
                 <i :class="term.iconCls"></i><span slot="title">{{term.name}}</span>
               </el-menu-item>
             </el-submenu> -->
-            <syf-menu-item style="border-right:1px solid #00c1de;" 
+            <syf-menu-item
               :index="item.children[0].path"
               :children="item.children"
               :class="$route.path.indexOf(item.parpath)>-1?'is-active':''">
@@ -70,6 +73,7 @@
 
       <!--右侧内容区-->
       <section class="content-container">
+        <!--tabs-->
         <el-tabs
           v-model="activeIndex"
           type="border-card"
@@ -215,7 +219,22 @@
             that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
           });
         }).catch(() => {});
-      }
+      },
+      //全屏
+      launchIntoFullscreen(element) { 
+        if(element.requestFullscreen){ 
+          element.requestFullscreen(); 
+         }
+         else if(element.mozRequestFullScreen) {
+         element.mozRequestFullScreen(); 
+         } 
+        else if(element.webkitRequestFullscreen) { 
+          element.webkitRequestFullscreen(); 
+         } 
+        else if(element.msRequestFullscreen) { 
+          element.msRequestFullscreen(); 
+         }
+       }
     },
     mounted() {
       let user = localStorage.getItem('access-user');

@@ -19,7 +19,7 @@ const store = new Vuex.Store({
       },
       {
         path: '/dashboard',
-        name: '概览',
+        name: '首页',
         redirect: '/dashboard',
         leaf: true, // 只有一个节点
         menuShow: true,
@@ -31,37 +31,61 @@ const store = new Vuex.Store({
       },
       {
         path: '/',
-        name: '资产管理',
-        menuShow: true,
-        leaf: true, // 只有一个节点
-        iconCls: 'iconfont icon-users', // 图标样式class
-        parpath: "asset",
-        children: [
-          {path: '/asset/list', iconCls: 'iconfont icon-users', name: '资产列表', parname: '资产管理'}
-        ]
-      },
-      {
-        path: '/',
-        name: '图书管理',
+        name: '资产',
         menuShow: true,
         leaf: true, // 只有一个节点
         iconCls: 'iconfont icon-books',
         parpath: "book",
         children: [
-          {path: '/book/list', iconCls: 'iconfont icon-books', name: '图书列表', parname: '图书管理'},
-          {path: '/book/category', iconCls: 'iconfont icon-books', name: '图书分类', parname: '图书管理'}
+          {path: '/book/list', iconCls: 'iconfont icon-books', name: '网络设备'},
+          {path: '/book/category', iconCls: 'iconfont icon-books', name: '安全设备'}
         ]
       },
       {
         path: '/',
-        name: '设置',
+        name: '工单',
+        menuShow: true,
+        leaf: true, // 只有一个节点
+        iconCls: 'iconfont icon-users', // 图标样式class
+        parpath: "asset",
+        children: [
+          {path: '/asset/list', iconCls: 'iconfont icon-users', name: '资产列表'}
+        ]
+      },
+      {
+        path: '/',
+        name: '数据',
+        menuShow: true,
+        leaf: true, // 只有一个节点
+        iconCls: 'iconfont icon-setting1',
+        parpath: "infodata",
+        children: [
+          {path: '/infodata/profile', iconCls: 'iconfont icon-setting1', name: '个人信息'},
+          {path: '/infodata/changepwd', iconCls: 'iconfont icon-setting1', name: '修改密码'}
+        ]
+      },
+      {
+        path: '/',
+        name: '告警',
+        menuShow: true,
+        leaf: true, // 只有一个节点
+        iconCls: 'iconfont icon-setting1',
+        parpath: "report",
+        children: [
+          {path: '/report/profile', iconCls: 'iconfont icon-setting1', name: '个人信息'},
+          {path: '/report/changepwd', iconCls: 'iconfont icon-setting1', name: '修改密码'}
+        ]
+      },
+      {
+        path: '/',
+        name: '系统',
         menuShow: true,
         leaf: true, // 只有一个节点
         iconCls: 'iconfont icon-setting1',
         parpath: "user",
         children: [
-          {path: '/user/profile', iconCls: 'iconfont icon-setting1', name: '个人信息', parname: '设置'},
-          {path: '/user/changepwd', iconCls: 'iconfont icon-setting1', name: '修改密码', parname: '设置'}
+          {path: '/user/profile', iconCls: 'iconfont icon-setting1', name: '个人信息'},
+          {path: '/user/changepwd', iconCls: 'iconfont icon-setting1', name: '修改密码'}
         ]
       }
     ],

@@ -69,7 +69,7 @@ a {
  margin: -10px -10px 10px -10px;
  border: none;
 }
-.el-tabs--border-card > .el-tabs__content{
+.el-tabs__content{
   display: none;
 }
 .container .content-container{
@@ -81,4 +81,26 @@ a {
 }
 .el-tabs__nav-next, .el-tabs__nav-prev{
   line-height: 32px;
+}
+.el-table--small th{
+  padding:0;
+}
+.el-dropdown {
+  vertical-align: top;
+  margin-left: 15px;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+.el-table--border td, .el-table--border th{
+  border-right:none;
+}
+.el-tabs--card > .el-tabs__header .el-tabs__item,.el-table--border th,.el-tabs--card > .el-tabs__header{
+  border-bottom:none;
+}
+.el-input-group__append, .el-input-group__prepend{
+  background-color: #00c1de;
+  color: #fff;
+  padding:0px 12px;
+  font-weight:900;
 }
