@@ -28,7 +28,8 @@ app.use(session({
   secret: 'love'
 }));
 app.use(lessMiddleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../dist')));
 
 //跨域问题处理
 // app.use(cors());
@@ -48,7 +49,6 @@ app.use(function (req, res, next) {
   err.status = 404;
   next(err);
 });
-
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
@@ -57,7 +57,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {message: "error", error: {status: err.status, stack: "Page Not Found"}});
 });
 
 module.exports = app;

@@ -12,10 +12,11 @@
         <span style="font-size: 18px;color: #fff;">运维指针</span>
       </div>
       <div class="topbar-account topbar-btn">
-        <el-dropdown trigger="click">
+        <el-dropdown trigger="click" >
           <span class="el-dropdown-link userinfo-inner"><i class="iconfont icon-user"></i> {{nickname}}  <i
             class="iconfont icon-down"></i></span>
           <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="screenshow">全屏</el-dropdown-item>
             <el-dropdown-item>
               <router-link to="/user/profile"><span style="color: #555;font-size: 14px;">个人信息</span></router-link>
             </el-dropdown-item>
@@ -26,9 +27,9 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <div class="topbar-account topbar-btn">
+     <!--  <div class="topbar-account topbar-btn">
         <el-button type="warning" icon="el-icon-rank">全屏</el-button>
-      </div>
+      </div> -->
     </el-col>
 
     <!--中间-->
@@ -72,7 +73,7 @@
       </aside>
 
       <!--右侧内容区-->
-      <section class="content-container">
+      <section class="content-container" id="screenshow">
         <!--tabs-->
         <el-tabs
           v-model="activeIndex"
@@ -97,7 +98,6 @@
         </div>
       </section>
     </el-col>
-
   </el-row>
 </template>
 
@@ -165,6 +165,10 @@
       }
     },
     methods: {
+      //全屏
+      screenshow(){
+        this.launchIntoFullscreen(document.getElementById("screenshow"));
+      },
       // tab切换时，动态的切换路由
       tabClick (tab) {
         let path = this.activeIndex;
