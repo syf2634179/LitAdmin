@@ -19,12 +19,6 @@ a {
 .el-menu-item, .el-submenu__title {
   color: #fff;
 }
-
-.el-menu .el-menu-item, .el-submenu .el-submenu__title {
-  line-height: 20px;
-  padding-top:12px;
-}
-
 .el-menu-item:hover, .el-submenu .el-menu-item:hover, .el-submenu__title:hover {
   background-color: #7ed2df;
 }
@@ -45,22 +39,11 @@ a {
 
 .el-menu .iconfont {
   vertical-align: baseline;
+  margin-right: 6px;
 }
 
 .warp-breadcrum{
   margin: 5px 10px 15px 0px;
-}
-.el-menu-item{
-  padding: 0;
-  text-align: center;
-}
-.el-menu--collapse > .el-menu-item span{
-  visibility: visible;
-  display: block;
-  height: auto;
-  font-size: 11px;
-  width: 100%;
-  text-align: center;
 }
 
 .el-tabs--border-card{
@@ -103,4 +86,7 @@ a {
   color: #fff;
   padding:0px 12px;
   font-weight:900;
+}
+.el-loading-mask{
+  background-color:rgba(255,255,255,.2);
 }

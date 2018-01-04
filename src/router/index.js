@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Dashboard from '@/components/Dashboard'
 
 import BookList from '@/components/book/list'
+import ZcGaiLan from '@/components/book/zcgailan'
 import BookCategoryList from '@/components/bookcategory/list'
 
 import UserList from '@/components/asset/list'
@@ -43,6 +44,7 @@ let router = new Router({
       leaf: true, // 只有一个节点
       iconCls: 'iconfont icon-books',
       children: [
+        {path: '/book/zcgailan', component: ZcGaiLan, name: '资产概览', menuShow: true},
         {path: '/book/list', component: BookList, name: '网络设备', menuShow: true},
         {path: '/book/category', component: BookCategoryList, name: '安全设备', menuShow: true}
       ]

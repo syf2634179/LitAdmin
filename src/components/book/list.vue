@@ -44,40 +44,65 @@
             <el-button @click="quicksearch" slot="append" icon="el-icon-search"></el-button>
           </el-input>
       </el-col>
-      <el-col :span="24" class="toolbar">
+      <el-col :span="21" class="toolbar">
         <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-          <el-tab-pane label="负载均衡" name="first">用户管理</el-tab-pane>
-          <el-tab-pane label="数据中心交换机" name="second">配置管理</el-tab-pane>
-          <el-tab-pane label="核心层交换机" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="汇聚层交换机" name="fourth">定时任务补偿</el-tab-pane>
-          <el-tab-pane label="核心层路由器" name="five">定时任务补偿</el-tab-pane>
-          <el-tab-pane label="汇聚层路由器" name="six">定时任务补偿</el-tab-pane>
-          <el-tab-pane label="接入层交换机" name="seven">定时任务补偿</el-tab-pane>
-
+          <el-tab-pane label="负载均衡" name="first">负载均衡</el-tab-pane>
+          <el-tab-pane label="数据中心交换机" name="second">数据中心交换机</el-tab-pane>
+          <el-tab-pane label="核心层交换机" name="third">核心层交换机</el-tab-pane>
+          <el-tab-pane label="汇聚层交换机" name="fourth">汇聚层交换机</el-tab-pane>
+          <el-tab-pane label="核心层路由器" name="five">核心层路由器</el-tab-pane>
+          <el-tab-pane label="汇聚层路由器" name="six">汇聚层路由器</el-tab-pane>
+          <el-tab-pane label="接入层交换机" name="seven">接入层交换机</el-tab-pane>
         </el-tabs>
       </el-col>
+      <el-col :span="1" class="toolbar" style="text-align:right;">
+        <el-tooltip class="item" effect="light" offset="6" :enterable="enterable" content="切换搜索栏" placement="top-start">
+          <i class="el-icon-zoom-in" style="margin-top:8px;" @click="showsearch()"></i>
+        </el-tooltip>
+      </el-col>
+      <el-col :span="2" class="toolbar" style="text-align:right;">
+        <el-popover
+          ref="popover2"
+          placement="left-start"
+          title="筛选显示列"
+          width="150"
+          trigger="click"
+          >
+          <el-button @click="resetChecked" size="mini">重置</el-button>
+          <el-tree
+            :data="showtitles"
+            show-checkbox
+            node-key="id"
+            ref="tree"
+            @check-change="getCheckedKeys"
+           >
+          </el-tree>
+        </el-popover>
+        <el-button v-popover:popover2 size="mini" type="primary">显示列筛选</el-button>
+      </el-col>
+      
       <!--列表-->
       <el-table :data="books" style="width: 100%" highlight-current-row @selection-change="selsChange" stripe>
-        <el-table-column type="selection" fixed width="40">
+        <el-table-column :key="Math.random()" type="selection"  width="40">
         </el-table-column>
-        <el-table-column type="index" fixed width="50" label="序号"></el-table-column>
-        <el-table-column prop="id" label="资产编号"  sortable >
-          <el-table-column prop="id"  :render-header="inputsearch" min-width="200">
+        <el-table-column :key="Math.random()" type="index"  width="50" label="序号"></el-table-column>
+        <el-table-column prop="id" :key="Math.random()"  label="资产编号"  sortable min-width="200" >
+          <el-table-column prop="id"  :render-header="inputsearch" min-width="200" v-if="searchshow">
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="name" label="资产名称"  sortable>
-          <el-table-column prop="name" :render-header="inputsearch" width="200">
+        <el-table-column prop="name" :key="Math.random()" label="资产名称"  sortable width="200" v-if="checktitles.name">
+          <el-table-column prop="name" :render-header="inputsearch" width="200" v-if="searchshow">
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="author" label="场地"  sortable>
-          <el-table-column prop="author" :render-header="inputsearch" width="100">
+        <el-table-column prop="author" :key="Math.random()" label="场地"  sortable width="100" v-if="checktitles.author">
+          <el-table-column prop="author" :render-header="inputsearch" width="100" v-if="searchshow">
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="publishAt" label="创建时间"  sortable>
-          <el-table-column prop="publishAt" :render-header="inputsearch" width="150">
+        <el-table-column prop="publishAt" :key="Math.random()" label="创建时间" width="150"  sortable v-if="checktitles.publishAt" >
+          <el-table-column prop="publishAt" :render-header="inputsearch" width="150" v-if="searchshow">
           </el-table-column>
         </el-table-column>
-        <el-table-column type="expand">
+        <el-table-column :key="Math.random()" type="expand" >
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-form-item label="[图书简介]">
@@ -86,15 +111,20 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
-          <el-table-column label="显示列筛选" align="center" width="150" fixed="right" :filters="propselects"
-            :filter-method="filterTag"
-            filter-placement="bottom-end">
+        <el-table-column :key="Math.random()" label="" width="80" fixed="right" align="center">
             <template slot-scope="scope">
-              <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button>
-              <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button>
+              <el-tooltip class="item" effect="light" offset="6" :enterable="enterable" content="修改" placement="top-start">
+                <i class="el-icon-edit" @click="showEditDialog(scope.$index,scope.row)"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="light" offset="6" :enterable="enterable" content="详情" placement="top-start">
+                <i class="el-icon-tickets" @click="showEditDialog(scope.$index,scope.row)"></i>
+              </el-tooltip>
+              <el-tooltip class="item" effect="light" offset="6" :enterable="enterable" content="删除" placement="top-start">
+                <i class="el-icon-delete" @click="delBook(scope.$index,scope.row)"></i>
+              </el-tooltip>
+              <!-- <el-button size="small" @click="showEditDialog(scope.$index,scope.row)">编辑</el-button> -->
+              <!-- <el-button type="danger" @click="delBook(scope.$index,scope.row)" size="small">删除</el-button> -->
             </template>
-          </el-table-column>
         </el-table-column>
       </el-table>
 <!--工具条-->
@@ -159,15 +189,44 @@
           name: ''
         },
         books: [],
+        showtitles: [
+          {
+            id: "1",
+            label: "基本信息",
+            children: [
+              // {
+              //   id: "id", 
+              //   label: "资产编号",
+              //   disabled: true
+              // },
+              {
+                id: "name", 
+                label: "资产名称"
+              },
+              {
+                id: "author", 
+                label: "场地"
+              },
+              {
+                id: "publishAt", 
+                label: "创建时间"
+              }
+            ]
+          }
+        ],
+        checktitles: {},
         total: 0,
         page: 1,
-        limit: 20,
+        limit: 10,
         loading: false,
         sels: [], //列表选中列
-        propselects: [{ text: '家', value: '家' }, { text: '公司', value: '公司' }],
-        searchshow: false, //搜索是否显示
+        propselects: [{ text: '家', value: '家' }, { text: '公司', value: '公司' }, { text: '', value: '末' }],
         activeName2: 'first',
         inputquicksearch:'',
+        sarchtime: new Date(),
+        searchspaceing: 1000, //触发搜索间隔
+        searchshow:false, //是否显示搜索框
+        enterable:false, //鼠标能否进入悬停显示
 
         //编辑相关数据
         editFormVisible: false,//编辑界面是否显示
@@ -213,9 +272,25 @@
       }
     },
     methods: {
+      //筛选显示列
+      getCheckedKeys(data) {
+        let checktitlejson=this.$refs.tree.getCheckedKeys(true);
+        let that=this;
+        that.checktitles={};
+        checktitlejson.forEach(function(value,index,array){
+          that.checktitles[value]=true;
+        });
+      },
+      //重置显示列
+      resetChecked() {
+        this.$refs.tree.setCheckedKeys([]);
+      },
       //快速搜索
       quicksearch(){
-        alert(this.inputquicksearch);
+        // alert(this.$store.state.zcFzShowTitle.author)
+        // alert(this.inputquicksearch);
+        // alert( !this.$store.state.zcFzShowTitle.author);
+        this.$store.commit('set_zcfz_showtitle', {author: !this.$store.state.zcFzShowTitle.author});
       },
       //tabs点击切换
       handleClick(tab, event) {
@@ -380,15 +455,39 @@
       },
       //header搜索
       inputsearch: function (h, { column, $index }) {
+        let that = this;
          return h('input', {
-          style:{
-            width:'96%'
+          style: {
+            width:'92%'
+          },
+          attrs: {
+            type: "text",
+            searchtitle: column.property
+          },
+          on: {
+            input: function (event) {
+              // this.value = event.target.value
+              // this.$emit('input', event.target.value)
+            },
+            keyup: function (event) {
+              // alert(event.target.value);
+              // alert(event.target.getAttribute("searchtitle"))
+              that.sarchtime = new Date();
+              setTimeout(function(){
+                let newtime = new Date();
+                if (newtime-that.sarchtime >= that.searchspaceing) {
+                  // alert(event.target.getAttribute("searchtitle"));
+                  // alert(event.target.value);
+                  that.handleSearch();
+                }
+              },that.searchspaceing);
+            }
           }
         })
       },
-      //删选列头
-      filterTag(value, row) {
-        return row.tag === value;
+      showsearch: function () {
+        this.searchshow = !this.searchshow;
+
       }
     },
     mounted() {
@@ -415,4 +514,15 @@
   background: #f5f7fa; 
   border-bottom-color:#dfe4ed !important;
 }
+.el-table .nopadding>.cell{
+  padding:0 !important;
+}
+.cell i,i.item{ 
+  cursor: pointer;
+  font-size: 16px;
+  color: #409eff;
+ }
+ .el-table thead th{
+  background: #f5f7fa;
+ }
 </style>

@@ -20,8 +20,7 @@ const store = new Vuex.Store({
       {
         path: '/dashboard',
         name: '首页',
-        redirect: '/dashboard',
-        leaf: true, // 只有一个节点
+        leaf: false, // 只有一个节点
         menuShow: true,
         iconCls: 'iconfont icon-home', // 图标样式class
         parpath: "dashboard",
@@ -33,10 +32,11 @@ const store = new Vuex.Store({
         path: '/',
         name: '资产',
         menuShow: true,
-        leaf: true, // 只有一个节点
+        leaf: false, // 只有一个节点
         iconCls: 'iconfont icon-books',
         parpath: "book",
         children: [
+          {path: '/book/zcgailan', iconCls: 'iconfont icon-books', name: '资产概览'},
           {path: '/book/list', iconCls: 'iconfont icon-books', name: '网络设备'},
           {path: '/book/category', iconCls: 'iconfont icon-books', name: '安全设备'}
         ]
@@ -45,7 +45,7 @@ const store = new Vuex.Store({
         path: '/',
         name: '工单',
         menuShow: true,
-        leaf: true, // 只有一个节点
+        leaf: false, // 只有一个节点
         iconCls: 'iconfont icon-users', // 图标样式class
         parpath: "asset",
         children: [
@@ -56,7 +56,7 @@ const store = new Vuex.Store({
         path: '/',
         name: '数据',
         menuShow: true,
-        leaf: true, // 只有一个节点
+        leaf: false, // 只有一个节点
         iconCls: 'iconfont icon-setting1',
         parpath: "infodata",
         children: [
@@ -68,7 +68,7 @@ const store = new Vuex.Store({
         path: '/',
         name: '告警',
         menuShow: true,
-        leaf: true, // 只有一个节点
+        leaf: false, // 只有一个节点
         iconCls: 'iconfont icon-setting1',
         parpath: "report",
         children: [
@@ -80,7 +80,7 @@ const store = new Vuex.Store({
         path: '/',
         name: '系统',
         menuShow: true,
-        leaf: true, // 只有一个节点
+        leaf: false, // 只有一个节点
         iconCls: 'iconfont icon-setting1',
         parpath: "user",
         children: [
@@ -89,7 +89,8 @@ const store = new Vuex.Store({
         ]
       }
     ],
-    menuchildren: []
+    menuchildren: [], // 2级menu
+    zcFzShowTitle: {}  // 资产-负载均衡显示列头
   },
   mutations: {
     newAuthor (state, msg) {
@@ -121,6 +122,11 @@ const store = new Vuex.Store({
     // 设置二级菜单
     set_active_menuchildren (state, menudata) {
       this.state.menuchildren = menudata;
+    },
+    // 设置资产负载均衡显示列头
+    set_zcfz_showtitle (state, titledata) {
+      alert(JSON.stringify(titledata));
+      this.state.zcFzShowTitle = titledata;
     }
   }
 })
