@@ -39,7 +39,7 @@ a {
 
 .el-menu .iconfont {
   vertical-align: baseline;
-  margin-right: 6px;
+  margin-right:6px;
 }
 
 .warp-breadcrum{
@@ -89,4 +89,25 @@ a {
 }
 .el-loading-mask{
   background-color:rgba(255,255,255,.2);
+}
+.chart-container .list-group-item.el-col{
+  padding:10px;
+}
+.content-container .tip {
+  padding: 8px 20px;
+  background-color: rgba(64,158,255,.1);
+  color:#409eff;
+  border-radius: 1px;
+  border-left: 3px solid #50bfff;
+  margin: 10px 0;
+}
+.content-container .el-col.tip-bottom{
+  padding: 4px 0px 10px 10px;
+  color:#409eff;
+  border-radius: 1px;
+  border-bottom: 2px solid #50bfff;
+}
+.el-button--mini, .el-button--mini.is-round{
+  padding:6px 0;
+  overflow:hidden;
 }

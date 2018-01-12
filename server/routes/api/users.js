@@ -22,6 +22,9 @@ router.patch('/profile', userController.profile);
 //用户修改个人密码
 router.patch('/changepwd', userController.changepwd);
 
+//用户获取菜单权限
+router.get('/menu', userController.menu);
+
 //返回user的集合
 router.get('/', userController.find);
 //

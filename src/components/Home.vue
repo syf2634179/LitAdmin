@@ -1,7 +1,7 @@
 <template>
-  <el-row class="container">
+  <el-row class="container" >
     <!--头部-->
-    <el-col :span="24" class="topbar-wrap">
+    <el-col :span="24" class="topbar-wrap" v-show="nofullscreen">
       <div class="topbar-logo topbar-btn">
         <a href="/"><img src="../assets/logo.png" style="padding-left:8px;"></a>
       </div>
@@ -33,11 +33,11 @@
     </el-col>
 
     <!--中间-->
-    <el-col :span="24" class="main">
+    <el-col :span="24" class="main" :style=[styletop]>
       <!--左侧导航-->
-      <aside :class="{showSidebar:!collapsed}">
+      <aside :class="{showSidebar:!collapsed}" v-show="nofullscreen">
         <!--导航菜单-->
-        <el-menu default-active="$route.path" router :collapse="collapsed">
+        <el-menu default-active="$route.path" router :collapse="collapsed" @select="handlemenuselect">
 	      <div class="menu-toggle" @click.prevent="collapse">
 	        <i class="iconfont icon-menufold" v-show="!collapsed"></i>
 	        <i class="iconfont icon-menuunfold" v-show="collapsed"></i>
@@ -53,7 +53,7 @@
             <el-menu-item
               :index="item.children[0].path"
               :children="item.children"
-              :class="$route.path.indexOf(item.parpath)>-1?'is-active':''">
+              :class="$route.path.indexOf(item.parpath)>-1?' is-activesyf':''">
               <i :class="item.iconCls"></i><span slot="title">{{item.name}}</span>
             </el-menu-item>
           </template>
@@ -68,7 +68,7 @@
             <el-menu-item 
               :index="item.path"
               :children="$store.state.menuchildren"
-              :class="$route.path.indexOf(item.path)>-1?'is-active':''">
+              :class="$route.path.indexOf(item.path)>-1?' is-activesyf':''">
               <span slot="title">{{item.name}}</span>
             </el-menu-item>
           </template>
@@ -110,13 +110,14 @@
   export default {
     name: 'home',
     created(){
+      // alert(this.$router.options.routes.length);
       bus.$on('setNickName', (text) => {
         this.nickname = text;
       })
 
       bus.$on('goto', (url) => {
         if (url === "/login") {
-          localStorage.removeItem('access-user');
+          sessionStorage.removeItem('user');
         }
         this.$router.push(url);
       })
@@ -125,7 +126,9 @@
       return {
         nickname: '',
         collapsed: true,
-        menuchildcollapsed: false
+        menuchildcollapsed: false,
+        nofullscreen: true,
+        styletop: {top: '50px'}
       }
     },
     computed: {
@@ -167,7 +170,7 @@
     methods: {
       //全屏
       screenshow(){
-        this.launchIntoFullscreen(document.getElementById("screenshow"));
+        this.launchIntoFullscreen(document.getElementById("body"));
       },
       // tab切换时，动态的切换路由
       tabClick (tab) {
@@ -196,6 +199,9 @@
       handleClose() {
         //console.log('handleclose');
       },
+      handlemenuselect(index, indexPath) {
+
+      },
       //折叠导航栏
       collapse: function () {
         this.collapsed = !this.collapsed;
@@ -209,13 +215,13 @@
       logout(){
         let that = this;
         this.$confirm('确认退出吗?', '提示', {
-          confirmButtonClass: 'el-button--warning'
+          confirmButtonClass: 'el-button--danger'
         }).then(() => {
           //确认
           that.loading = true;
           API.logout().then(function (result) {
             that.loading = false;
-            localStorage.removeItem('access-user');
+            sessionStorage.removeItem('user');
             that.$router.go('/login'); //用go刷新
           }, function (err) {
             that.loading = false;
@@ -228,26 +234,39 @@
         }).catch(() => {});
       },
       //全屏
-      launchIntoFullscreen(element) { 
+      launchIntoFullscreen(element) {
         if(element.requestFullscreen){ 
           element.requestFullscreen(); 
-         }
-         else if(element.mozRequestFullScreen) {
-         element.mozRequestFullScreen(); 
-         } 
+        }
+        else if(element.mozRequestFullScreen) {
+          element.mozRequestFullScreen(); 
+        } 
         else if(element.webkitRequestFullscreen) { 
           element.webkitRequestFullscreen(); 
-         } 
+        } 
         else if(element.msRequestFullscreen) { 
           element.msRequestFullscreen(); 
-         }
+        }
+        // this.styletop.top="0px";
+        // this.nofullscreen=false;
        }
     },
     mounted() {
-      let user = localStorage.getItem('access-user');
+      let user = sessionStorage.getItem('user');
       if (user) {
         user = JSON.parse(user);
         this.nickname = user.nickname || '';
+        API.findMenu({menu: user.menu}).then(function (result) {
+          if (result && result.menu) {
+            that.$store.commit('set_active_menu', result.menu);
+          }
+          that.$router.push({path: '/'});
+        }, function (err) {
+          that.$store.commit('set_active_menu', []);
+        }).catch(function (error) {
+          console.log(error);
+          that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+        });
       }
       // 刷新时以当前路由做为tab加入tabs
       // let firstpage="/dashboard";
@@ -270,6 +289,43 @@
           break
         }
       }
+      let that=this;
+      document.addEventListener('fullscreenchange', function(){
+        if(!that.nofullscreen){
+          that.styletop.top = "50px";
+          that.nofullscreen = true;
+        }else{
+          that.styletop.top = "0px";
+          that.nofullscreen = false;
+        }
+      });
+      document.addEventListener('mozfullscreenchange', function(){ 
+        if(!that.nofullscreen){
+          that.styletop.top = "50px";
+          that.nofullscreen = true;
+        }else{
+          that.styletop.top = "0px";
+          that.nofullscreen = false;
+        }
+      });
+      document.addEventListener('webkitfullscreenchange', function(){ 
+        if(!that.nofullscreen){
+          that.styletop.top = "50px";
+          that.nofullscreen = true;
+        }else{
+          that.styletop.top = "0px";
+          that.nofullscreen = false;
+        }
+      });
+      document.addEventListener('MSFullscreenChange', function(){
+        if(!that.nofullscreen){
+          that.styletop.top = "50px";
+          that.nofullscreen = true;
+        }else{
+          that.styletop.top = "0px";
+          that.nofullscreen = false;
+        }
+      });
     }
   }
 </script>
@@ -359,12 +415,27 @@
       	width:120px !important;
       	background: #eaedf1;
       	transition: all .5s ease;
+        .el-menu-item,.el-menu-item.is-active{
+          color:#666;
+          background: #eaedf1;
+        }
       }
-      .syf-menu .el-menu-item{
-      	color:#666;
+      .el-menu-item.is-active{
+        background: #333744;
       }
-      .syf-menu .el-menu-item.is-active,.syf-menu .el-menu-item:hover{
+      .el-menu-item.is-active i{
+        color: #878d99;
+      }
+      .el-submenu.el-menu-item.is-activesyf, .el-menu-item.is-activesyf, .el-submenu .el-menu-item.is-activesyf:hover, .el-menu-item.is-activesyf:hover {
+        background-color: #00C1DE;
+        color: #fff;
+      }
+      .el-menu-item.is-activesyf i,.el-menu-item.is-activesyf i:hover{
+        color:#fff;
+      }
+      .syf-menu .el-menu-item.is-activesyf,.syf-menu .el-menu-item:hover{
       	background: #fff;
+        color: #666;
       }
       .syf-menu[childcollapse="true"]{
       	width:16px !important;
@@ -378,12 +449,15 @@
       	  	top: 50%;
       	  }
       	}
+      	.shutiao:hover{
+	  	  background: #00c1de;
+	  	}
       }
       .el-submenu .el-menu-item {
-        min-width: 60px;
+        min-width: 50px;
       }
       .el-menu--collapse {
-        width: 60px;
+        width: 54px;
       }
       .el-menu .el-menu-item, .el-submenu .el-submenu__title {
         height: 36px;
@@ -400,6 +474,9 @@
       color: white;
       height: 29px;
       line-height: 29px;
+      .iconfont {
+        margin:0;
+      }
     }
     .content-container {
       background: #fff;

@@ -17,9 +17,12 @@ export default {
   changeProfile: params => {
     return API.PATCH('/api/users/profile', params)
   },
-
   //查询获取user列表(通过page分页)
   findList: params => {
     return API.GET('/api/users', params)
   },
+  //查询获取权限
+  findMenu: params => {
+    return API.GET('/api/users/menu', params)
+  }
 }

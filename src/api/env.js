@@ -4,7 +4,7 @@
  * 实际项目中建议该文件不纳入版本管理
  */
 export default {
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://192.168.1.107:3001',
   // baseURL: '',
   isDev: true
 }

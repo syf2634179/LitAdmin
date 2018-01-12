@@ -4,8 +4,10 @@
  * Created by jerry on 2017/11/2.
  */
 const Users = require('../data/user');
+const Menus = require('../data/menu');
 let userController = {};
 let _Users = Users;
+let _Menus=Menus;
 
 /**
  * 检查用户的登录状态
@@ -53,7 +55,8 @@ userController.login = function (req, res) {
       username: user.username,
       nickname: user.nickname,
       name: user.name,
-      email: user.email
+      email: user.email,
+      menu: user.menu
     });
   } else {
     return res.json({"errcode": 40004, "errmsg": "密码错误"});
@@ -102,13 +105,33 @@ userController.changepwd = function (req, res) {
 };
 
 /**
+ * 获取menu
+ * @param req
+ * @param res
+ */
+userController.menu = function (req, res) {
+  let rltUsers = [];
+  let page = parseInt(req.query.menu || -1); //角色
+  if ( page == 0 ) {
+    rltUsers = _Menus["one"];
+  } else if ( page == 1 ) {
+    rltUsers = _Menus["two"];
+  } else{
+     rltUsers = _Menus["default"];
+  }
+  res.json({
+    menu: rltUsers
+  })
+};
+
+/**
  * 通过书名查询，获取图书列表
  * @param req
  * @param res
  */
 userController.find = function (req, res) {
   let page = parseInt(req.query.page || 1); //页码（默认第1页）
-  let limit = parseInt(req.query.limit || 10); //每页显示条数（默认10条）
+  let limit = parseInt(req.query.limit || 20); //每页显示条数（默认10条）
   let name = req.query.name || '';
   let total = 0;
   let rltUsers = [];

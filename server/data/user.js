@@ -13,18 +13,31 @@ Users.push({
   email: 'jerry9022@qq.com', //邮箱
   nickname: '超级管理员', //昵称
   sex: 1, //性别
-  addr: '北京市海淀区上地七街'
+  addr: '北京市海淀区上地七街',
+  menu: 0 //角色
 });
 
 Users.push({
   id: 2,
   username: 'staff',
-  name: "枫叶", //姓名
+  name: "staff", //姓名
   password: '123123',
   email: '1642499350@qq.com',
   nickname: '普通管理员',
   sex: 1, //性别
-  addr: '北京市海淀区'
+  addr: '北京市海淀区',
+  menu: 1
+});
+Users.push({
+  id: 3,
+  username: 'niming',
+  name: "匿名", //姓名
+  password: '123123',
+  email: '1642499350@qq.com',
+  nickname: '游客',
+  sex: 1, //性别
+  addr: '北京市海淀区',
+  menu: -1
 });
 
 module.exports = Users;

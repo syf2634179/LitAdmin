@@ -49,10 +49,21 @@
             API.login(loginParams).then(function (result) {
               that.loading = false;
               if (result && result.id) {
-                localStorage.setItem('access-user', JSON.stringify(result));
-//                that.$store.commit('SET_ROUTERS', user.permissions)
-//                that.$router.addRoutes(that.$store.getters.addRouters);
-//                that.$router.options.routes = that.$store.getters.routers;
+                sessionStorage.setItem('user', JSON.stringify(result));
+                // localStorage.setItem('access-user', JSON.stringify(result));
+                // that.$store.commit('SET_ROUTERS', user.permissions)
+                // that.$router.addRoutes(that.$store.getters.addRouters);
+                // that.$router.options.routes = that.$store.getters.routers;
+                API.findMenu({menu: result.menu}).then(function (result) {
+                  if (result && result.menu) {
+                    that.$store.commit('set_active_menu', result.menu);
+                  }
+                }, function (err) {
+                  that.$store.commit('set_active_menu', []);
+                }).catch(function (error) {
+                  console.log(error);
+                  that.$message.error({showClose: true, message: '请求出现异常', duration: 2000});
+                });
                 that.$router.push({path: '/'});
               } else {
                 that.$message.error({showClose: true, message: result.errmsg || '登录失败', duration: 2000});

@@ -29,7 +29,7 @@ app.use(session({
 }));
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use('/', express.static(path.join(__dirname, '../dist')));
 
 //跨域问题处理
 // app.use(cors());
